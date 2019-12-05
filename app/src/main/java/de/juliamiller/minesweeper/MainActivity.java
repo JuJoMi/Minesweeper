@@ -178,6 +178,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //TODO: OnLongClickListener erstellen für Fahne setzen
+    /*public void onLongClick(View view) {
+        String btnID = view.getResources().getResourceEntryName(view.getId());
+        int ID = Integer.parseInt(btnID.substring(3,5));
+        //ImageButton imageButton = (ImageButton) findViewById()
+
+    }*/
+
     public void actClick(View view) {
         String btnID = view.getResources().getResourceEntryName(view.getId());
         int ID = Integer.parseInt(btnID.substring(3,5));
