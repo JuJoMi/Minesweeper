@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                 GameWin();
             }
 
-            //TODO: Textfeld muss auf Bombenzählen;
+            //TODO: Textfeld muss auf Bombenzählen (Fahnen setzen)
         }
     }
 
@@ -249,6 +249,20 @@ public class MainActivity extends AppCompatActivity {
         ImageButton imageButton = findViewById(R.id.btnNewGame);
         imageButton.setImageResource(R.drawable.smiley_smile);
 
-        //TODO: Bomben Button disablen
+        //TODO: Bomben Button disablen, Fahne anzeigen
+        for(int k = 0; k <= 24; k++) {
+            String btnID = "btn" + String.format("%02d", k);
+            int resID = getResources().getIdentifier(btnID, "id", getPackageName());
+            imageButton = (ImageButton) findViewById(resID);
+            imageButton.setEnabled(false);
+            if (bomben[k] == true) {
+                imageButton.setVisibility(imageButton.INVISIBLE);
+                String txtID = "txt" + String.format("%02d", k);
+                resID = getResources().getIdentifier(txtID, "id", getPackageName());
+                TextView textview = (TextView) findViewById(resID);
+                textview.setCompoundDrawablesWithIntrinsicBounds(R.drawable.tile_flag,0,0,0);
+                textview.setVisibility(textview.VISIBLE);
+            }
+        }
     }
 }
