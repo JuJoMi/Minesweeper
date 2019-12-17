@@ -263,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
                 textview.setCompoundDrawablesWithIntrinsicBounds(R.drawable.tile_flag,0,0,0);
                 textview.setVisibility(textview.VISIBLE);
             }
+
         }
     }
 }
