@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
     private void GameWin() {
         Log.d("UI", "Wiiiiiiin");
         ImageButton imageButton = findViewById(R.id.btnNewGame);
-        imageButton.setImageResource(R.drawable.smiley_smile);
+        imageButton.setImageResource(R.drawable.smiley);
 
         //TODO: Bomben Button disablen, Fahne anzeigen
         for(int k = 0; k <= 24; k++) {
@@ -263,7 +263,6 @@ public class MainActivity extends AppCompatActivity {
                 textview.setCompoundDrawablesWithIntrinsicBounds(R.drawable.tile_flag,0,0,0);
                 textview.setVisibility(textview.VISIBLE);
             }
-
         }
     }
 }

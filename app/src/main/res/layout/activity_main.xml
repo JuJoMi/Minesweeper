@@ -22,8 +22,8 @@
             android:layout_marginEnd="88dp" android:id="@+id/textView"/>
     <ImageButton
             android:src="@drawable/smiley_neutral"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
             android:id="@+id/btnNewGame"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
