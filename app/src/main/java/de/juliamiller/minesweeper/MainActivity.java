@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean[] bomben = new boolean[25];
     private int counter = 20;
+    private int flag = 5;
 
     boolean state = true;
 
@@ -133,7 +134,37 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //TODO: wenn Fahne, Button !clickable
+
+        for (int x = 0; x < 25; x++) {
+            String btnID = "btn" + String.format("%02d", x);
+            int resID = getResources().getIdentifier(btnID, "id", getPackageName());
+            final ImageButton imageButton = (ImageButton) findViewById(resID);
+
+            imageButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (imageButton.getTag() == "1") {
+                        imageButton.setImageResource(R.drawable.tile);
+                        imageButton.setClickable(true);
+                        imageButton.setTag("2");
+                        flag++;
+                    }
+                    else {
+                        imageButton.setImageResource(R.drawable.tile_flag);
+                        imageButton.setClickable(false);
+                        imageButton.setTag("1");
+                        flag--;
+                    }
+                    TextView textView = (TextView) findViewById(R.id.textView);
+                    textView.setText(String.valueOf(flag));
+                    return true;
+                }
+            });
+        }
     }
+
 
     public void Init(){
         counter = 20;
@@ -173,18 +204,16 @@ public class MainActivity extends AppCompatActivity {
                 textview.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
             ImageButton imageButton = (ImageButton) findViewById(getResources().getIdentifier("btn" + String.format("%02d", i), "id", getPackageName()));
+            imageButton.setImageResource(R.drawable.tile);
+            imageButton.setTag("2");
             imageButton.setVisibility(ImageButton.VISIBLE);
             imageButton.setEnabled(true);
+            flag = 5;
+            TextView textView = (TextView) findViewById(R.id.textView);
+            textView.setText(String.valueOf(flag));
         }
     }
 
-    //TODO: OnLongClickListener erstellen für Fahne setzen
-    /*public void onLongClick(View view) {
-        String btnID = view.getResources().getResourceEntryName(view.getId());
-        int ID = Integer.parseInt(btnID.substring(3,5));
-        //ImageButton imageButton = (ImageButton) findViewById()
-
-    }*/
 
     public void actClick(View view) {
         String btnID = view.getResources().getResourceEntryName(view.getId());
@@ -206,8 +235,6 @@ public class MainActivity extends AppCompatActivity {
             if(counter == 0) {
                 GameWin();
             }
-
-            //TODO: Textfeld muss auf Bombenzählen (Fahnen setzen)
         }
     }
 
