@@ -20,8 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean[] bomben = new boolean[25];
     private int counter = 20;
     private int flag = 5;
-
-    boolean state = true;
+    private boolean state = true;
 
     private void SetBomben(){
         for (int i = 0; i < 25; i++)
