@@ -17,25 +17,28 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private boolean[] bomben = new boolean[25];
-    private int counter = 20;
-    private int flag = 5;
-    private boolean state = true;
+    private boolean[] bomben = new boolean[25];     //Spielfelder 5x5
+    private int counter = 20;   //Anzahl freie nicht-geklickte Felder
+    private int flag = 5;   //Anzahl setzbare Flaggen
+    private boolean state = true;   //Spiel aktiv; Smiley
 
     private void SetBomben(){
+        //Alle Spielfelder auf "leer" setzen
         for (int i = 0; i < 25; i++)
         {
             bomben[i] = false;
         }
 
+        //5 Bomben zufällig verteilen
         for (int i = 0; i < 5; i++)
         {
-            int random = new Random().nextInt(25);
+            int random = new Random().nextInt(25); //Zufallszahl zwischen (einschließlich)0 und (ausschließlich)25
             if(bomben[random] == true){
                 i--;
             }
             else{
                 bomben[random] = true;
+                //Entsprechendes Textfeld benennen, ID festlegen und Minenbild setzen
                 String txtID = "txt" + String.format("%02d", random);
                 int resID = getResources().getIdentifier(txtID, "id", getPackageName());
                 TextView textview = (TextView) findViewById(resID);
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Je Feld umliegende Bomben zählen, um entsprechendes Textfeld mit Zahl zu versehen
     private int CountBomben(int feld){
         int anzahlBomben = 0;
 
@@ -116,14 +120,14 @@ public class MainActivity extends AppCompatActivity {
 
         final ImageButton btnNewGame = (ImageButton) findViewById(R.id.btnNewGame);
 
-        Init();
+        Init(); //Initialisierung wenn die App gestartet wird
 
         btnNewGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!state)
                 {
-                    Init();
+                    Init(); // Initialisierung wenn der NewGame-Button gedrückt wird
                     btnNewGame.setImageResource(R.drawable.smiley_neutral);
                     state = true;
                 }
@@ -134,8 +138,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //TODO: wenn Fahne, Button !clickable
-
+        //"Gedrückthalten" für jeden Button implementieren
         for (int x = 0; x < 25; x++) {
             String btnID = "btn" + String.format("%02d", x);
             int resID = getResources().getIdentifier(btnID, "id", getPackageName());
@@ -146,16 +149,15 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onLongClick(View view) {
                     if (imageButton.getTag() == "1") {
                         imageButton.setImageResource(R.drawable.tile);
-                        imageButton.setClickable(true);
                         imageButton.setTag("2");
                         flag++;
                     }
                     else {
                         imageButton.setImageResource(R.drawable.tile_flag);
-                        imageButton.setClickable(false);
                         imageButton.setTag("1");
                         flag--;
                     }
+                    //Anzahl Flaggen oben links
                     TextView textView = (TextView) findViewById(R.id.textView);
                     textView.setText(String.valueOf(flag));
                     return true;
@@ -164,22 +166,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     public void Init(){
         counter = 20;
-        SetBomben();
+        SetBomben(); //Funktionsaufruf: Bomben zufällig auf Felder verteilen TODO: erstes geklicktes Feld ist keine Bombe
+        //untere Ebene Textfelder beschriften
         for(int i = 0; i < 25; i++) {
             String txtID = "txt" + String.format("%02d", i);
             int resID = getResources().getIdentifier(txtID, "id", getPackageName());
             TextView textview = (TextView) findViewById(resID);
-            int anz = CountBomben(i);
+            int anz = CountBomben(i); //Funktionsaufruf: Wie viele Bomben umgeben ein bestimmtes Feld?
             switch (anz) {
                 case 0:
                     textview.setText("");
                     break;
                 case 1:
-                    textview.setText(String.valueOf(anz));
-                    textview.setTextColor(Color.parseColor("#FF00FF"));
+                    textview.setText(String.valueOf(anz)); //Anzahl als Text einfügen
+                    textview.setTextColor(Color.parseColor("#FF00FF")); //Text färben
                     break;
                 case 2:
                     textview.setText(String.valueOf(anz));
@@ -198,18 +200,19 @@ public class MainActivity extends AppCompatActivity {
                     textview.setTextColor(Color.parseColor("#FFFF00"));
                     break;
             }
-            textview.setVisibility(textview.INVISIBLE);
-            if (!bomben[i]) {
+            textview.setVisibility(textview.INVISIBLE); //Textfelder verstecken
+            if (!bomben[i]) { //wenn ein Feld keine Bombe hat, wird das Image des Textfeldes gelöscht
                 textview.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
+            //obere Ebene Buttons einrichten
             ImageButton imageButton = (ImageButton) findViewById(getResources().getIdentifier("btn" + String.format("%02d", i), "id", getPackageName()));
             imageButton.setImageResource(R.drawable.tile);
             imageButton.setTag("2");
             imageButton.setVisibility(ImageButton.VISIBLE);
             imageButton.setEnabled(true);
-            flag = 5;
+            flag = 5; //noch setzbare Flaggen
             TextView textView = (TextView) findViewById(R.id.textView);
-            textView.setText(String.valueOf(flag));
+            textView.setText(String.valueOf(flag)); //Anzahl Flaggen oben links
         }
     }
 
@@ -217,77 +220,71 @@ public class MainActivity extends AppCompatActivity {
     public void actClick(View view) {
         String btnID = view.getResources().getResourceEntryName(view.getId());
         int ID = Integer.parseInt(btnID.substring(3,5));
-
-        if (bomben[ID])
-        {
-            GameOver(ID);
-        }
-        else
-        {
-            int resID = getResources().getIdentifier("txt" + String.format("%02d", ID), "id", getPackageName());
-            TextView textview = (TextView) findViewById(resID);
-            textview.setVisibility(textview.VISIBLE);
-            ImageButton btn = (ImageButton) findViewById(view.getId());
-            btn.setVisibility(view.INVISIBLE);
-            btn.setEnabled(false);
-            counter--;
-            if(counter == 0) {
-                GameWin();
+        int resID = getResources().getIdentifier(btnID, "id", getPackageName());
+        ImageButton imageButton = (ImageButton) findViewById(resID);
+        if (imageButton.getTag() == "2") { //angeklicktes Feld ist keine Flagge
+            if (bomben[ID]) { //angeklicktes Feld ist eine Bombe
+                GameOver(ID);
+            } else { //Button deaktivieren und in den Hintergrund; Textview mit Zahl in den Vordergrund
+                resID = getResources().getIdentifier("txt" + String.format("%02d", ID), "id", getPackageName());
+                TextView textview = (TextView) findViewById(resID);
+                textview.setVisibility(textview.VISIBLE);
+                ImageButton btn = (ImageButton) findViewById(view.getId());
+                btn.setVisibility(view.INVISIBLE);
+                btn.setEnabled(false);
+                counter--;
+                if (counter == 0) { //alle "ungefährlichen" Felder wurden angeklickt
+                    GameWin();
+                }
             }
         }
     }
 
     private void GameOver(int ID) {
-        Log.d("UI", "Loooser");
+        Log.d("UI", "Loooser"); //Ausgabe im Log zur Kontrolle in der Testphase
 
-        String txtID = "txt" + String.format("%02d", ID);
-        int resID = getResources().getIdentifier(txtID, "id", getPackageName());
-        TextView textview = (TextView) findViewById(resID);
-        textview.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mine_broken,0,0,0);
-        textview.setVisibility(textview.VISIBLE);
-
-        String btnID = "btn" + String.format("%02d", ID);
-        resID = getResources().getIdentifier(btnID, "id", getPackageName());
-        ImageButton imageButton = (ImageButton) findViewById(resID);
-        imageButton.setEnabled(false);
-        imageButton.setVisibility(imageButton.INVISIBLE);
-
+        //anpassen des Smileys
         ImageButton btnNewGame = (ImageButton) findViewById(R.id.btnNewGame);
         btnNewGame.setImageResource(R.drawable.smiley_sad);
 
-        for(int k = 0; k <= 24; k++) {
-                btnID = "btn" + String.format("%02d", k);
-                resID = getResources().getIdentifier(btnID, "id", getPackageName());
-                imageButton = (ImageButton) findViewById(resID);
+        for(int k = 0; k <= 24; k++) { //alle Buttons deaktivieren
+                String btnID = "btn" + String.format("%02d", k);
+                int resID = getResources().getIdentifier(btnID, "id", getPackageName());
+                ImageButton imageButton = (ImageButton) findViewById(resID);
                 imageButton.setEnabled(false);
             if (bomben[k] == true) {
-                imageButton.setVisibility(imageButton.INVISIBLE);
-                txtID = "txt" + String.format("%02d", k);
+                imageButton.setVisibility(imageButton.INVISIBLE); //in den Hintergrund, wenn Bombe
+                String txtID = "txt" + String.format("%02d", k);
                 resID = getResources().getIdentifier(txtID, "id", getPackageName());
-                textview = (TextView) findViewById(resID);
+                TextView textview = (TextView) findViewById(resID);
+                if ( k == ID) { //anpassen des Images der Textview des angeklickten Buttons; in den Vordergrund
+                    textview.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mine_broken, 0, 0, 0);
+                }
                 textview.setVisibility(textview.VISIBLE);
             }
         }
     }
 
     private void GameWin() {
-        Log.d("UI", "Wiiiiiiin");
+        Log.d("UI", "Wiiiiiiin");  //Ausgabe im Log zur Kontrolle in der Testphase
+
+        //anpassen des Smileys
         ImageButton imageButton = findViewById(R.id.btnNewGame);
         imageButton.setImageResource(R.drawable.smiley);
 
-        //TODO: Bomben Button disablen, Fahne anzeigen
-        for(int k = 0; k <= 24; k++) {
+        for(int k = 0; k <= 24; k++) { //alle Buttons deaktivieren
             String btnID = "btn" + String.format("%02d", k);
             int resID = getResources().getIdentifier(btnID, "id", getPackageName());
             imageButton = (ImageButton) findViewById(resID);
             imageButton.setEnabled(false);
             if (bomben[k] == true) {
-                imageButton.setVisibility(imageButton.INVISIBLE);
+                imageButton.setVisibility(imageButton.INVISIBLE); //in den Hintergrund, wenn Bombe
                 String txtID = "txt" + String.format("%02d", k);
                 resID = getResources().getIdentifier(txtID, "id", getPackageName());
                 TextView textview = (TextView) findViewById(resID);
+                //statt Bomben Flaggen als Image setzen
                 textview.setCompoundDrawablesWithIntrinsicBounds(R.drawable.tile_flag,0,0,0);
-                textview.setVisibility(textview.VISIBLE);
+                textview.setVisibility(textview.VISIBLE); //in den Vordergrund
             }
         }
     }
